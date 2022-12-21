@@ -51,7 +51,7 @@ In general, the SSH protocol error message will include information about the sp
 It is important for the client and server to use compatible versions of the SSH protocol in order to establish a secure connection. If the client's version is not compatible with the server, the connection will not be established and the client will be unable to access the server's resources.
 
 ## Python Implementation
-```
+```python
 import socket
 
 HOST: str = '127.0.0.1'  # Connect to local host
@@ -117,7 +117,9 @@ When this packet is sent to the server from the client, the server should respon
 The following algorithms are listed under [RFC 4253](https://www.rfc-editor.org/rfc/rfc4253)
 All algorithms mentioned **must** be sent to the server in a comma seperated list. The following code is a python implementation to convert a list of strings into the bytes of a string containing the comma seperated list.
 
-```bytes(",".join(lst), "utf-8")```
+```python
+bytes(",".join(lst), "utf-8")
+```
 
 #### Key Exchange
 | Algorithm | Required? |
@@ -169,7 +171,7 @@ After exchanging SSH versions, the SSH client and SSH server perform a series of
 This process ensures that the connection between the client and server is secure and that only authorized users can access the server.
 
 ### Python Implementation
-```
+```python
 from cryptography.hazmat.primitives import serialization as crypto_serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.backends import default_backend as crypto_default_backend
