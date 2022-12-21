@@ -126,6 +126,45 @@ bytes(",".join(lst), "utf-8")
 | ------| --------|
 | diffie-hellman-group1-sha1 | REQUIRED
 | diffie-hellman-group14-sha1 | REQUIRED
+
+##### Python Implementation for Key Exchange
+```python
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.asymmetric import dh
+from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+from cryptography.hazmat.primitives import hashes
+import cryptography.hazmat.primitives.serialization as serialization
+from cryptography.hazmat.primitives.serialization import (
+    Encoding,
+    PublicFormat,
+)
+
+# Generate private keys for the client and server
+client_private_key = dh.generate_parameters(generator=2, key_size=1024, backend=default_backend()).generate_private_key()
+
+# Generate public keys for the client and server
+client_public_key = client_private_key.public_key()
+
+# Exchange public keys
+client_public_key_bytes = client_public_key.public_bytes(
+    encoding=serialization.Encoding.DER,
+    format=serialization.PublicFormat.SubjectPublicKeyInfo
+)
+
+# Calculate shared secret key
+server_public_key = "GET server_public_key HERE"
+client_shared_key = client_private_key.exchange(server_public_key)
+
+# Hash shared secret key using SHA-1
+client_key_material = HKDF(
+    algorithm=hashes.SHA1(),
+    length=32,
+    salt=None,
+    info=b"handshake data",
+    backend=default_backend()
+).derive(client_shared_key)
+```
+
 #### MAC
 | Algorithm | Required? | Details |
 | ---------- | ----------- | -------------|
@@ -134,6 +173,7 @@ bytes(",".join(lst), "utf-8")
 | hmac-md5  |  OPTIONAL  |  HMAC-MD5 (digest length = key length = 16)
 | hmac-md5-96  |  OPTIONAL  |  first 96 bits of HMAC-MD5 (digest length = 12, key length = 16)
 | none  |  OPTIONAL  |  no MAC; NOT RECOMMENDED
+
 #### Encryption
 | Algorithm  | Required? | Details |
 | --------  | ------------------- | --------------------- |
