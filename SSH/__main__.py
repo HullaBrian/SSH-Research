@@ -3,7 +3,7 @@ import typer
 from loguru import logger
 
 from SSH import __app_name__, __version__
-from SSH.initialization import Connection
+from SSH.initialization import connect as connect_to_client
 from SSH.types import IP
 
 
@@ -38,6 +38,7 @@ def connect(ip: str):
         logger.error("Can not connect to client IP: IP is not in a valid format!")
         return
     logger.info(f"Connecting to {str(ip)}")
+    connect_to_client(ip)
 
 
 if __name__ == "__main__":
